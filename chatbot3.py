@@ -5,7 +5,7 @@ from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 os.environ["GOOGLE_API_KEY"] = "AIzaSyB39_1CcInWV3r4RRXAWnOLdWBjgRrOF5A"
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2) # 0.2 temperature for consistency
 
 system_instruction_basic = SystemMessage(content="""
 You are a helpful assistant who specialises in explaining code, code concepts, and coding principles.
@@ -53,20 +53,17 @@ Use precise, professional, and technical language.
 Encourage deep understanding of both the theoretical foundations and practical applications of the concept.
 """)
 
-# --- Streamlit Page Setup ---
 st.set_page_config(page_title="Digisplain", page_icon="💡", layout="centered")
 
 st.title("💬 Digisplain")
 st.caption("An AI assistant that explains programming concepts at different levels of understanding.")
 
-# Initialize chat state
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 if "level" not in st.session_state:
     st.session_state.level = "Basic"
 
-# --- Chat History Display ---
 for msg in st.session_state.messages:
     if isinstance(msg, HumanMessage):
         with st.chat_message("user"):
@@ -78,7 +75,6 @@ for msg in st.session_state.messages:
 st.markdown("---")
 st.markdown("### ✏️ Ask a Question")
 
-# --- User Input Section (Bottom) ---
 user_input = st.chat_input("Enter a programming concept or question...")
 
 level = st.radio(
@@ -89,10 +85,8 @@ level = st.radio(
 )
 
 if user_input:
-    # Store user input
     st.session_state.messages.append(HumanMessage(content=user_input))
 
-    # Choose system prompt
     if level == "Basic":
         system_prompt = system_instruction_basic
     elif level == "Intermediate":
@@ -100,31 +94,23 @@ if user_input:
     else:
         system_prompt = system_instruction_advanced
 
-    # Generate AI response
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             response = llm.invoke([system_prompt, HumanMessage(content=user_input)])
-            # st.markdown(response.content)
-
             content = response.content
-
-            # Check for visual URL
             visual_url = None
             for line in content.splitlines():
                 if line.strip().lower().startswith("visual url:"):
                     visual_url = line.split(":", 1)[1].strip()
                     break
 
-            # Display the text part
             text_part = content.split("Visual URL:")[0] if "Visual URL:" in content else content
             st.markdown(text_part)
 
-            # Display visual if present
             if visual_url:
                 st.markdown("#### 📊 Visual Aid")
                 st.image(visual_url, use_container_width=True)
 
-    # Store AI response
-
     st.session_state.messages.append(AIMessage(content=response.content))
+
 
