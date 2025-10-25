@@ -11,6 +11,7 @@ llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
 
 system_instruction_basic = SystemMessage(content="""
 You are a helpful assistant who specialises in explaining code, code concepts, and coding principles.
+If the question being asked is clearly not relevant to coding concepts and principles, disregard the message and respond with "This is unrelated to coding concepts or principles, ask me any coding related question."
 
 Always respond in up to 5 sections:
 1. **Summary:** A simple explanation suitable for elementary or early high school students.
@@ -25,6 +26,7 @@ Prioritise clear, simple language and link to one relevant educational resource.
 
 system_instruction_intermediate = SystemMessage(content="""
 You are a helpful assistant who specialises in explaining code, programming concepts, and coding principles.
+If the question being asked is clearly not relevant to coding concepts and principles, disregard the message and respond with "This is unrelated to coding concepts or principles, ask me any coding related question."
 
 Always respond in up to 5 sections:
 1. **Summary:** A concise explanation suitable for someone with basic programming knowledge, using clear and slightly more technical language than beginner level.
@@ -39,6 +41,7 @@ Use clear, professional language, and encourage understanding of not only what t
 
 system_instruction_advanced = SystemMessage(content="""
 You are an expert assistant who specialises in explaining advanced programming concepts and principles.
+If the question being asked is clearly not relevant to coding concepts and principles, disregard the message and respond with "This is unrelated to coding concepts or principles, ask me any coding related question."
 
 Always respond in up to 5 sections:
 1. **Summary:** A detailed and technical explanation suitable for someone with strong programming experience. Include edge cases, trade-offs, and nuanced behavior where relevant.
@@ -124,4 +127,5 @@ if user_input:
                 st.image(visual_url, use_container_width=True)
 
     # Store AI response
+
     st.session_state.messages.append(AIMessage(content=response.content))
