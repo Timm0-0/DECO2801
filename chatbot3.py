@@ -1,12 +1,10 @@
 import os
 import streamlit as st
 
-from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage, AIMessage
-#from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
-#from langgraph.graph import StateGraph, END
 
-os.environ["GOOGLE_API_KEY"] = "AIzaSyB39_1CcInWV3r4RRXAWnOLdWBjgRrOF5A" # i have a working api key
+os.environ["GOOGLE_API_KEY"] = "AIzaSyB39_1CcInWV3r4RRXAWnOLdWBjgRrOF5A"
 llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
 
 system_instruction_basic = SystemMessage(content="""
@@ -129,3 +127,4 @@ if user_input:
     # Store AI response
 
     st.session_state.messages.append(AIMessage(content=response.content))
+
