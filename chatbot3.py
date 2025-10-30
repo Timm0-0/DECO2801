@@ -64,6 +64,7 @@ if "messages" not in st.session_state:
 if "level" not in st.session_state:
     st.session_state.level = "Basic"
 
+# Tracks the messages sent into the chat 
 for msg in st.session_state.messages:
     if isinstance(msg, HumanMessage):
         with st.chat_message("user"):
@@ -94,23 +95,29 @@ if user_input:
     else:
         system_prompt = system_instruction_advanced
 
+    # Sets up temporary visuals and sends prompt request to AI API
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             response = llm.invoke([system_prompt, HumanMessage(content=user_input)])
             content = response.content
+            # Checking for visual element
             visual_url = None
             for line in content.splitlines():
                 if line.strip().lower().startswith("visual url:"):
                     visual_url = line.split(":", 1)[1].strip()
                     break
 
+            #Displays everything before the visual element
             text_part = content.split("Visual URL:")[0] if "Visual URL:" in content else content
             st.markdown(text_part)
 
+            # Checks if there is any visual element to display and displays it
             if visual_url:
                 st.markdown("#### 📊 Visual Aid")
                 st.image(visual_url, use_container_width=True)
-
+                
+    # Update the session_state to display and track previous prompts and outputs
     st.session_state.messages.append(AIMessage(content=response.content))
+
 
 
